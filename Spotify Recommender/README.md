@@ -3,7 +3,7 @@
 
 This project leverages the Spotify API to create a simple neural network recommendation system for myself. Using my listening history and metadata acquired using the Spotipy packagae in Python, I have trained a simple Neural Network with several hidden layers to recommend songs on the Billboard Top 100 as of May 2024 to myself. 
 
-The [data](https://github.com/apanand/UChicago-MSADS/tree/main/Spotify%20Recommender/data) folder holds my listening history as provided by requesting Spotify in advance. It comes in 4 JSON files containing all of the songs I listened to as well as artist of the song and the duration I played the song for. 
+The [data](https://github.com/apanand/UChicago-MSADS/tree/main/Spotify%20Recommender/data) folder holds my listening history as provided by requesting Spotify in advance. It comes in 4 JSON files containing all of the songs I listened to from May 2023 - May 2024 as well as artist of the song and the duration I played the song for. 
 
 I have also included two dataframes in there, one for my listening history and one for the billboard top 100 as of May 2024. More on this below. 
 
