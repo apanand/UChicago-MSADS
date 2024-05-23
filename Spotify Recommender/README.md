@@ -11,7 +11,7 @@ There are two Google Colab ipynb notebooks here: one for data acquisition and wr
 
 Roadmap:
 
-1. In order to get the data in usable form, I had to scrape the Spotify API for metadata. This code can be found in the Data_Acquisition_and_Modeling.ipynb file. This code gathers the data that goes into the listening_history.csv and billboard_features_df.csv files.
+1. In order to get the data in usable form, I had to scrape the Spotify API for metadata. This code can be found in the Data_Acquisition_and_Wrangling.ipynb file. This code gathers the data that goes into the listening_history.csv and billboard_features_df.csv files.
 
 2. After scraping the data with the Spotify API and creating those two dataframes, the Modeling.ipynb file contains Exploratory Data Analysis as well as the Neural Network model I have written to craft recommendations to myself. The simple neural network is near the bottom as well as results calculations (test and train accuracy, loss, etc.) 
 
