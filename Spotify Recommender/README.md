@@ -20,4 +20,7 @@ If you have any questions or encounter any bugs, feel free to email me at: [apan
 
 
 
-![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](https://myoctocat.com/assets/images/base-octocat.svg)
+![University of Chicago MS in Applied Data Science Logo](https://voices.uchicago.edu/msca2/files/2023/06/UChicago_PSD_MS-AppliedDataScience_Vertical_Color-RGB-1.png)
+
+
+![Spotify Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/1200px-Spotify_logo_with_text.svg.png)
