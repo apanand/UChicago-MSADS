@@ -11,7 +11,7 @@ from ultralytics import YOLO
 import cv2
 
 # Load the YOLO model (using the path to your model)
-model = YOLO('/Users/apoorvanand/Desktop/UChicago MSADS/Capstone/best.pt')  # Path to your saved YOLO model
+model = YOLO('model_weights/best.pt')  # Path to your saved YOLO model
 
 # Function to make predictions and draw bounding boxes
 def predict_image(image):
