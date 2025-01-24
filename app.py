@@ -35,10 +35,10 @@ if uploaded_image is not None:
     image = Image.open(uploaded_image)
 
     # Display the uploaded image
-    st.image(image, caption="Uploaded Image", use_column_width=True)
+    st.image(image, caption="Uploaded Image", use_container_width=True)
 
     # Run prediction and display the result
     result_image = predict_image(image)
     
     # Display the result
-    st.image(result_image, caption="Predicted Image with Bounding Boxes", use_column_width=True)
+    st.image(result_image, caption="Predicted Image with Bounding Boxes", use_container_width=True)
