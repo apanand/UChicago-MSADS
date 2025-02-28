@@ -11,7 +11,7 @@ from PIL import Image
 import numpy as np
 from ultralytics import YOLO
 import cv2
-from transformers import SegformerImageProcessor, SegformerForSemanticSegmentation
+from transformers import AutoImageProcessor, SegformerForSemanticSegmentation
 import torch
 
 # Load models
@@ -26,7 +26,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 @st.cache_resource
 def load_road_masking_model():
     model_name = "nvidia/segformer-b5-finetuned-cityscapes-1024-1024"
-    processor = SegformerImageProcessor.from_pretrained(model_name)
+    processor = AutoImageProcessor.from_pretrained(model_name)
     model = SegformerForSemanticSegmentation.from_pretrained(model_name).to(device)
     return processor, model
 
