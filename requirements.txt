@@ -3,7 +3,3 @@ Pillow
 numpy
 opencv-python
 ultralytics
-torchvision
-transformers>=4.38.1
-torch
-opencv-python-headless>=4.8.0
