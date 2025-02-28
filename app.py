@@ -1,112 +1,44 @@
-import asyncio
-
-# Ensure an asyncio event loop is running
-try:
-    asyncio.get_running_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-
-
 import streamlit as st
 from PIL import Image
 import numpy as np
 from ultralytics import YOLO
 import cv2
-from transformers import AutoImageProcessor, SegformerForSemanticSegmentation
-import torch
-torch._C._init_namespaces()
 
+# Load the YOLO model (using the path to your model)
+model = YOLO('best.pt')  # Path to your saved YOLO model
 
-# Load models
-@st.cache_resource
-def load_graffiti_model():
-    return YOLO("best.pt")
-
-graffiti_model = load_graffiti_model()
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-@st.cache_resource
-def load_road_masking_model():
-    model_name = "nvidia/segformer-b5-finetuned-cityscapes-1024-1024"
-    processor = AutoImageProcessor.from_pretrained(model_name)
-    model = SegformerForSemanticSegmentation.from_pretrained(model_name).to(device)
-    return processor, model
-
-processor, road_masking_model = load_road_masking_model()
-
-@st.cache_resource
-@st.cache_resource
-@st.cache_resource
-def load_road_classifier():
-    try:
-        road_classifier = torch.load("best_model_binary.pth", map_location=device)
-        if isinstance(road_classifier, dict):  # If it's a state_dict, load it into a model
-            from torchvision import models
-            road_classifier_model = models.resnet101(pretrained=False)  # Ensure correct architecture
-            road_classifier_model.fc = torch.nn.Linear(road_classifier_model.fc.in_features, 1)
-            road_classifier_model.load_state_dict(road_classifier)
-            road_classifier_model.to(device)
-            return road_classifier_model
-        road_classifier.to(device)
-        return road_classifier
-    except Exception as e:
-        st.error(f"Error loading road classifier model: {e}")
-        return None
-
-
-
-road_classifier = load_road_classifier()
-
+# Function to make predictions and draw bounding boxes
 def predict_image(image):
+    # Convert the uploaded image to a format compatible with YOLO model (OpenCV format)
     image_cv = np.array(image)
-    results = graffiti_model(image_cv)
-    return results[0].plot()
-
-def mask_road(image):
-    inputs = processor(images=image, return_tensors="pt").to(device)
-    with torch.no_grad():
-        outputs = road_masking_model(**inputs)
-    logits = outputs.logits.squeeze().cpu().numpy()
-    mask = np.argmax(logits, axis=0) == 0
-    return mask
-
-def classify_road(image):
-    image_resized = cv2.resize(np.array(image), (224, 224))  # Resize to match model input
-    image_tensor = torch.tensor(image_resized).permute(2, 0, 1).unsqueeze(0).float().to(device)
     
-    with torch.no_grad():
-        output = road_classifier(image_tensor)
+    # Run the model on the image
+    results = model(image_cv)
     
-    prediction = torch.sigmoid(output).item()
-    return "Bad Road" if prediction > 0.5 else "Good Road"
+    # Extract the first result (if there are multiple outputs, take the first one)
+    result = results[0]
 
+    # Get the image with bounding boxes drawn
+    output_image = result.plot()  # This will automatically draw the bounding boxes
+
+    return output_image
 
 # Streamlit UI
 st.title("Google Street View Disorder Detection")
+st.write("Upload an image of a street, and our model will detect disorder.")
 
-# Dropdown menu for selecting model
-option = st.sidebar.selectbox("Choose detection type", ["Graffiti", "Bad Roads"])
+# Image upload
+uploaded_image = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
 
-if option == "Graffiti":
-    st.header("Graffiti Detection")
-    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_container_width=True)
-        result_image = predict_image(image)
-        st.image(result_image, caption="Predicted Image with Bounding Boxes", use_container_width=True)
+if uploaded_image is not None:
+    # Open the uploaded image
+    image = Image.open(uploaded_image)
 
-elif option == "Bad Roads":
-    st.header("Bad Roads Detection")
-    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_container_width=True)
-        road_mask = mask_road(image)
-        road_mask_resized = cv2.resize(road_mask.astype(np.uint8), (image.width, image.height), interpolation=cv2.INTER_NEAREST)
-        road_only_image = np.array(image) * road_mask_resized[:, :, np.newaxis]
-        road_condition = classify_road(road_only_image)
-        st.write(f"Road Condition: **{road_condition}**")
+    # Display the uploaded image
+    st.image(image, caption="Uploaded Image", use_container_width=True)
+
+    # Run prediction and display the result
+    result_image = predict_image(image)
+    
+    # Display the result
+    st.image(result_image, caption="Predicted Image with Bounding Boxes", use_container_width=True)
