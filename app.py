@@ -29,7 +29,7 @@ def load_road_classifier():
     from torchvision import models  # Ensure you import models if it's a torchvision model
     road_classifier = models.resnet101()  # Replace this with the actual architecture you used
     road_classifier.fc = torch.nn.Linear(road_classifier.fc.in_features, 1)  # Adjust output layer if necessary
-    road_classifier.load_state_dict(torch.load("/Users/apoorvanand/Downloads/UChicago-MSADS/best_model_binary.pth", map_location=device))
+    road_classifier.load_state_dict(torch.load("best_model_binary.pth", map_location=device))
     road_classifier.to(device)
     return road_classifier
 
