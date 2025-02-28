@@ -40,7 +40,7 @@ def load_road_classifier():
         road_classifier = torch.load("best_model_binary.pth", map_location=device)
         if isinstance(road_classifier, dict):  # If it's a state_dict, load it into a model
             from torchvision import models
-            road_classifier_model = models.resnet50(pretrained=False)  # Ensure correct architecture
+            road_classifier_model = models.resnet101(pretrained=False)  # Ensure correct architecture
             road_classifier_model.fc = torch.nn.Linear(road_classifier_model.fc.in_features, 1)
             road_classifier_model.load_state_dict(road_classifier)
             road_classifier_model.to(device)
