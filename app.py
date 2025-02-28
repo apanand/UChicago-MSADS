@@ -1,3 +1,11 @@
+import asyncio
+
+try:
+    asyncio.get_running_loop()
+except RuntimeError:
+    asyncio.set_event_loop(asyncio.new_event_loop())
+
+
 import streamlit as st
 from PIL import Image
 import numpy as np
@@ -26,13 +34,23 @@ processor, road_masking_model = load_road_masking_model()
 
 @st.cache_resource
 @st.cache_resource
+@st.cache_resource
 def load_road_classifier():
     try:
         road_classifier = torch.load("best_model_binary.pth", map_location=device)
+        if isinstance(road_classifier, dict):  # If it's a state_dict, load it into a model
+            from torchvision import models
+            road_classifier_model = models.resnet50(pretrained=False)  # Ensure correct architecture
+            road_classifier_model.fc = torch.nn.Linear(road_classifier_model.fc.in_features, 1)
+            road_classifier_model.load_state_dict(road_classifier)
+            road_classifier_model.to(device)
+            return road_classifier_model
+        road_classifier.to(device)
         return road_classifier
     except Exception as e:
         st.error(f"Error loading road classifier model: {e}")
         return None
+
 
 
 road_classifier = load_road_classifier()
@@ -51,11 +69,15 @@ def mask_road(image):
     return mask
 
 def classify_road(image):
-    image_tensor = torch.tensor(np.array(image)).permute(2, 0, 1).unsqueeze(0).float().to(device)
+    image_resized = cv2.resize(np.array(image), (224, 224))  # Resize to match model input
+    image_tensor = torch.tensor(image_resized).permute(2, 0, 1).unsqueeze(0).float().to(device)
+    
     with torch.no_grad():
         output = road_classifier(image_tensor)
+    
     prediction = torch.sigmoid(output).item()
     return "Bad Road" if prediction > 0.5 else "Good Road"
+
 
 # Streamlit UI
 st.title("Google Street View Disorder Detection")
