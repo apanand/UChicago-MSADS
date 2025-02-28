@@ -66,16 +66,16 @@ if option == "Graffiti":
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_column_width=True)
+        st.image(image, caption="Uploaded Image", use_container_width=True)
         result_image = predict_image(image)
-        st.image(result_image, caption="Predicted Image with Bounding Boxes", use_column_width=True)
+        st.image(result_image, caption="Predicted Image with Bounding Boxes", use_container_width=True)
 
 elif option == "Bad Roads":
     st.header("Bad Roads Detection")
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_column_width=True)
+        st.image(image, caption="Uploaded Image", use_container_width=True)
         road_mask = mask_road(image)
         road_mask_resized = cv2.resize(road_mask.astype(np.uint8), (image.width, image.height), interpolation=cv2.INTER_NEAREST)
         road_only_image = np.array(image) * road_mask_resized[:, :, np.newaxis]
