@@ -1,9 +1,12 @@
 import asyncio
 
+# Ensure an asyncio event loop is running
 try:
     asyncio.get_running_loop()
 except RuntimeError:
-    asyncio.set_event_loop(asyncio.new_event_loop())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
 
 
 import streamlit as st
@@ -13,6 +16,8 @@ from ultralytics import YOLO
 import cv2
 from transformers import AutoImageProcessor, SegformerForSemanticSegmentation
 import torch
+torch._C._init_namespaces()
+
 
 # Load models
 @st.cache_resource
