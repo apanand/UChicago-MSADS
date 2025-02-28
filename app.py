@@ -25,13 +25,15 @@ def load_road_masking_model():
 processor, road_masking_model = load_road_masking_model()
 
 @st.cache_resource
+@st.cache_resource
 def load_road_classifier():
-    from torchvision import models  # Ensure you import models if it's a torchvision model
-    road_classifier = models.resnet101()  # Replace this with the actual architecture you used
-    road_classifier.fc = torch.nn.Linear(road_classifier.fc.in_features, 1)  # Adjust output layer if necessary
-    road_classifier.load_state_dict(torch.load("best_model_binary.pth", map_location=device))
-    road_classifier.to(device)
-    return road_classifier
+    try:
+        road_classifier = torch.load("best_model_binary.pth", map_location=device)
+        return road_classifier
+    except Exception as e:
+        st.error(f"Error loading road classifier model: {e}")
+        return None
+
 
 road_classifier = load_road_classifier()
 
