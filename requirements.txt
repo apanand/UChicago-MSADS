@@ -5,4 +5,4 @@ opencv-python
 ultralytics
 torch
 torchvision
-transformers>=4.30.0
+transformers>=4.38.1
