@@ -3,6 +3,6 @@ Pillow
 numpy
 opencv-python
 ultralytics
-torch
 torchvision
 transformers>=4.38.1
+torch>=2.0.0
