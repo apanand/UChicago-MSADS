@@ -3,3 +3,6 @@ Pillow
 numpy
 opencv-python
 ultralytics
+torch
+torchvision
+transformers
